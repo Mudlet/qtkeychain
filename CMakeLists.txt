@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3)
 
-set(QTKEYCHAIN_VERSION 0.12.0)
+set(QTKEYCHAIN_VERSION 0.12.90)
 set(QTKEYCHAIN_SOVERSION 1)
 
 project(qtkeychain VERSION ${QTKEYCHAIN_VERSION})
@@ -155,12 +155,7 @@ if(WIN32)
 endif()
 
 if(APPLE)
-    if(IOS)
-        list(APPEND qtkeychain_SOURCES keychain_ios.mm)
-    else()
-        list(APPEND qtkeychain_SOURCES keychain_mac.cpp)
-    endif()
-
+    list(APPEND qtkeychain_SOURCES keychain_apple.mm)
     list(APPEND qtkeychain_LIBRARIES "-framework Foundation" "-framework Security")
 endif()
 
@@ -181,6 +176,7 @@ if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT HAIKU)
             add_definitions(-DHAVE_LIBSECRET=1)
         endif()
         INCLUDE_DIRECTORIES(${LIBSECRET_INCLUDE_DIRS})
+        LINK_DIRECTORIES(${LIBSECRET_LIBRARY_DIRS})
         list(APPEND qtkeychain_LIBRARIES_PRIVATE ${LIBSECRET_LIBRARIES})
     endif()
 
