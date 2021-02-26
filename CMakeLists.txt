@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.3)
 set(QTKEYCHAIN_VERSION 0.12.90)
 set(QTKEYCHAIN_SOVERSION 1)
 
-project(qtkeychain VERSION ${QTKEYCHAIN_VERSION})
+project(qtkeychain VERSION ${QTKEYCHAIN_VERSION} LANGUAGES CXX)
 
 # Enable C++11
 SET(CMAKE_CXX_STANDARD 11)
@@ -20,7 +20,7 @@ include(ECMSetupVersion)
 include(ECMGeneratePriFile)
 
 option(BUILD_WITH_QT6 "Build qtkeychain with Qt 6" OFF)
-option(BUILD_TEST_APPLICATION "Build test application" ON)
+option(BUILD_TEST_APPLICATION "Build test application" OFF)
 option(BUILD_TRANSLATIONS "Build translations" ON)
 option(QTKEYCHAIN_STATIC "Build static library" OFF)
 
@@ -170,11 +170,8 @@ if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT HAIKU)
     option(LIBSECRET_SUPPORT "Build with libsecret support" ON)
 
     if(LIBSECRET_SUPPORT)
-        pkg_check_modules(LIBSECRET libsecret-1)
-
-        if (LIBSECRET_FOUND)
-            add_definitions(-DHAVE_LIBSECRET=1)
-        endif()
+        pkg_check_modules(LIBSECRET REQUIRED libsecret-1)
+        add_definitions(-DHAVE_LIBSECRET=1)
         INCLUDE_DIRECTORIES(${LIBSECRET_INCLUDE_DIRS})
         LINK_DIRECTORIES(${LIBSECRET_LIBRARY_DIRS})
         list(APPEND qtkeychain_LIBRARIES_PRIVATE ${LIBSECRET_LIBRARIES})
